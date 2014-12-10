@@ -2,18 +2,37 @@ var preloadCameras = function () {
   var cameras, images = [], i = 0;
 
   cameras = [
-    { id: 'mo1', src: 'http://kamery.topr.pl/moko/moko_01.jpg' },
-    { id: 'mo2', src: 'http://kamery.topr.pl/moko_TPN/moko_02.jpg' },
-    { id: 'ps1', src: 'http://kamery.topr.pl/stawy2/stawy2.jpg' },
-    { id: 'ps2', src: 'http://kamery.topr.pl/stawy1/stawy1.jpg' },
-    { id: 'gor', src: 'http://kamery.topr.pl/goryczkowa/gorycz.jpg' },
-    { id: 'cho', src: 'http://kamery.topr.pl/chocholowska/chocholow.jpg' }
+    { id: 'mo1', src: 'http://kamery.topr.pl/moko/moko_01.jpg', alt: "Morskie Oko" },
+    { id: 'mo2', src: 'http://kamery.topr.pl/moko_TPN/moko_02.jpg', alt: "Morskie Oki" },
+    { id: 'ps1', src: 'http://kamery.topr.pl/stawy2/stawy2.jpg', alt: "Dolina Pięciu Stawów Polskich" },
+    { id: 'ps2', src: 'http://kamery.topr.pl/stawy1/stawy1.jpg', alt: "Dolina Pięciu Stawów Polskich" },
+    { id: 'gor', src: 'http://kamery.topr.pl/goryczkowa/gorycz.jpg', alt: "Dolina Gorczykowa" },
+    { id: 'cho', src: 'http://kamery.topr.pl/chocholowska/chocholow.jpg', alt: "Polana Chochołowska" }
   ];
+
+  $('<img/>')
+
 
   $.each(cameras, function(k,v) {
     images[k]     = new Image();
+
+    $(images[k])
+      .load(function() { console.log("Camera's image loaded correctly"); })
+      .error(function() {
+        console.log("Error loading camera's image");
+
+        $(this)
+          .parents('td')
+            .first()
+              .append('<div class="error"><span>' + v.alt + '</span></div>')
+          .end()
+            .end()
+              .remove();
+      });
+
     images[k].id  = v.id;
     images[k].src = v.src;
+    images[k].alt = v.alt;
 
     $('#' + v.id).html(images[k]);
   });
