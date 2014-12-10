@@ -6,6 +6,12 @@
   "author": "Jarek Pelczynski",
   "email": "jpelczynski@gmail.com",
 
+  "icons": {
+    "16": "icon_16.png",
+    "48": "icon_48.png",
+    "128": "icon_128.png"
+  },
+
   "chrome_url_overrides": {
     "newtab": "page.html"
   },
