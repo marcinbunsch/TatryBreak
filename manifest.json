@@ -4,7 +4,6 @@
   "version": "0.1",
   "description" :"Aktualny podgląd na warunki pogodowe w Tatrach w nowej zakładce",
   "author": "Jarek Pelczynski",
-  "email": "jpelczynski@gmail.com",
 
   "icons": {
     "16": "icon_16.png",
