@@ -71,15 +71,15 @@ var appendTemp = function (degrees) {
 };
 
 var loadAvalancheWarning = function () {
-  var warning = {};
+  var warning = {}, labelHTML = '<a title="Czytaj cały komunikat" href="http://tpn.pl/zwiedzaj/komunikat-lawinowy"><i class="fa fa-info-circle"></i> Stopień zagrożenia lawinowego:</a>';
 
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
     $('#tmp').html('');
 
-    warning.sign = $(response).find('.avalanche').find('img[src*="avalanche"]');
-    warning.sign = 'Stopień zagrożenia lawinowego: <img src="http://tpn.pl/themes/' + warning.sign[0].src.split('/themes')[1] + '">';
+    warning.icon = $(response).find('.avalanche').find('img[src*="avalanche"]');
+    warning.icon = labelHTML + ' <img src="http://tpn.pl/themes/' + warning.icon[0].src.split('/themes')[1] + '">';
 
-    appendAvalancheWarning(warning.sign);
+    appendAvalancheWarning(warning.icon);
   });
 };
 
