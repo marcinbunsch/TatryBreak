@@ -1,3 +1,24 @@
+var preloadCameras = function () {
+  var cameras, images = [], i = 0;
+
+  cameras = [
+    { id: 'mo1', src: 'http://kamery.topr.pl/moko/moko_01.jpg' },
+    { id: 'mo2', src: 'http://kamery.topr.pl/moko_TPN/moko_02.jpg' },
+    { id: 'ps1', src: 'http://kamery.topr.pl/stawy2/stawy2.jpg' },
+    { id: 'ps2', src: 'http://kamery.topr.pl/stawy1/stawy1.jpg' },
+    { id: 'gor', src: 'http://kamery.topr.pl/goryczkowa/gorycz.jpg' },
+    { id: 'cho', src: 'http://kamery.topr.pl/chocholowska/chocholow.jpg' }
+  ];
+
+  $.each(cameras, function(k,v) {
+    images[k]     = new Image();
+    images[k].id  = v.id;
+    images[k].src = v.src;
+
+    $('#' + v.id).html(images[k]);
+  });
+};
+
 var loadConditions = function () {
   var url = "http://www.test.tatrynet.pl/pogoda/weatherMiddleware_v1.0/xml/lokalizacje1.xml";
 
@@ -34,6 +55,8 @@ var loadAvalancheWarning = function () {
   var warning = {};
 
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
+    $('#tmp').html('');
+
     warning.sign = $(response).find('.avalanche').find('img[src*="avalanche"]');
     warning.sign = 'Stopień zagrożenia lawinowego: <img src="http://tpn.pl/themes/' + warning.sign[0].src.split('/themes')[1] + '">';
 
@@ -45,5 +68,8 @@ var appendAvalancheWarning = function (warning) {
   $('#avalanches-warning').html(warning);
 };
 
-loadConditions();
-loadAvalancheWarning();
+var init = (function () {
+  preloadCameras();
+  loadConditions();
+  loadAvalancheWarning();
+})();
