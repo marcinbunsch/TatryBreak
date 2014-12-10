@@ -2,15 +2,12 @@
   "name": "Tatrrace",
   "manifest_version": 2,
   "version": "0.1",
+  "description" :"Aktualny podgląd na warunki pogodowe w Tatrach w nowej zakładce",
   "author": "Jarek Pelczynski",
+  "email": "jpelczynski@gmail.com",
 
   "chrome_url_overrides": {
     "newtab": "page.html"
-  },
-
-  "background": {
-    "scripts" : ["js/background.js"],
-    "persistent": false
   },
 
   "permissions": [
