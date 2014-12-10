@@ -2,6 +2,7 @@
   "name": "Tatrrace",
   "manifest_version": 2,
   "version": "0.1",
+  "author": "Jarek Pelczynski",
 
   "chrome_url_overrides": {
     "newtab": "page.html"
