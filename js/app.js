@@ -66,7 +66,7 @@ var loadConditions = function () {
 
 var appendTemp = function (degrees) {
   $.each(degrees, function (k, v) {
-    $('.' + k).append('<div class="condition"><i class="wi wi-thermometer"></i> ' + v.temp + ' °C &nbsp;&nbsp; <i class="wi wi-strong-wind"></i> ' + v.wind + 'm/s</div>');
+    $('.' + k).append('<div class="condition"><i class="wi wi-thermometer"></i> ' + v.temp + ' &deg;C &nbsp;&nbsp; <i class="wi wi-strong-wind"></i> ' + v.wind + 'm/s</div>');
   });
 };
 
