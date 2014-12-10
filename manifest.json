@@ -13,6 +13,7 @@
   },
 
   "permissions": [
-    "http://www.test.tatrynet.pl/*"
+    "http://www.test.tatrynet.pl/*",
+    "http://tpn.pl/*"
   ]
 }
