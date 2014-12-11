@@ -1,5 +1,5 @@
 var preloadCameras = function () {
-  var cameras, images = [], i = 0;
+  var cameras, i = 0;
 
   cameras = [
     { id: 'mo1', src: 'http://kamery.topr.pl/moko/moko_01.jpg', alt: "Morskie Oko" },
@@ -10,13 +10,11 @@ var preloadCameras = function () {
     { id: 'cho', src: 'http://kamery.topr.pl/chocholowska/chocholow.jpg', alt: "Polana Chochołowska" }
   ];
 
-  $('<img/>')
-
-
   $.each(cameras, function(k,v) {
-    images[k]     = new Image();
+    var image = new Image(),
+        $link = $('<a></a>');
 
-    $(images[k])
+    $(image)
       .load(function() { console.log("Camera's image loaded correctly"); })
       .error(function() {
         console.log("Error loading camera's image");
@@ -25,17 +23,32 @@ var preloadCameras = function () {
           .parents('td')
             .first()
               .append('<div class="error"><span>' + v.alt + '</span></div>')
-          .end()
             .end()
-              .remove();
+          .end()
+        .remove();
       });
 
-    images[k].id  = v.id;
-    images[k].src = v.src;
-    images[k].alt = v.alt;
+    image.id  = v.id;
+    image.src = v.src;
+    image.alt = v.alt;
 
-    $('#' + v.id).html(images[k]);
+    $link.attr({ 'href': v.src, 'class': 'zoom'});
+    $link.append(image);
+
+    $('#' + v.id).append($link);
   });
+
+  $('.zoom').imageLightbox({
+    preloadNext:    false,
+    quitOnImgClick: true,
+    onStart:        function() {
+                        $('#page').animate({ opacity: 0.35 });
+                    },
+    onEnd:          function() {
+                        $('#page').animate({ opacity: 1 });
+                    }
+  });
+
 };
 
 var loadConditions = function () {

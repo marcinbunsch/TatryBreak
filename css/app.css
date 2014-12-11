@@ -129,3 +129,14 @@ table .error span {
 #footer a {
   color: rgba(255,255,255,.5);
 }
+
+#imagelightbox {
+  position: fixed;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+
+.zoom {
+  display: block;
+  cursor: zoom-in;
+}
