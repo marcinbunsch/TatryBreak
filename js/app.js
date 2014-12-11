@@ -50,13 +50,16 @@ var loadConditions = function () {
       var data = data;
 
       degrees.gor.temp = $(data).find('#gor').find('temperatura').find('aktualna').text();
-      degrees.gor.wind = $(data).find('#gor').find('wiatr').find('silaMax').text();
+      degrees.gor.wind = $(data).find('#gor').find('wiatr').find('silaAvg').text();
+      degrees.gor.wind = parseFloat( degrees.gor.wind ).toFixed(1);
 
       degrees.ps.temp  = $(data).find('#ps').find('temperatura').find('aktualna').text();
-      degrees.ps.wind  = $(data).find('#ps').find('wiatr').find('silaMax').text();
+      degrees.ps.wind  = $(data).find('#ps').find('wiatr').find('silaAvg').text();
+      degrees.ps.wind  = parseFloat( degrees.ps.wind ).toFixed(1);
 
       degrees.mo.temp  = $(data).find('#mo').find('temperatura').find('aktualna').text();
-      degrees.mo.wind  = $(data).find('#mo').find('wiatr').find('silaMax').text();
+      degrees.mo.wind  = $(data).find('#mo').find('wiatr').find('silaAvg').text();
+      degrees.mo.wind  = parseFloat( degrees.mo.wind ).toFixed(1);
 
       appendTemp(degrees);
     }
@@ -66,7 +69,7 @@ var loadConditions = function () {
 
 var appendTemp = function (degrees) {
   $.each(degrees, function (k, v) {
-    $('.' + k).append('<div class="condition"><i class="wi wi-thermometer"></i> ' + v.temp + ' &deg;C &nbsp;&nbsp; <i class="wi wi-strong-wind"></i> ' + v.wind + 'm/s</div>');
+    $('.' + k).append('<div class="condition"><i class="wi wi-thermometer"></i> ' + v.temp + ' <small>&deg;C</small> &nbsp;&nbsp; <i class="wi wi-strong-wind"></i> ' + v.wind + ' <small>m/s</small></div>');
   });
 };
 
