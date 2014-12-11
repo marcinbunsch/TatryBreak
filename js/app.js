@@ -87,7 +87,13 @@ var appendAvalancheWarning = function (warning) {
   $('#avalanches-warning').html(warning);
 };
 
+var getVersion = function () {
+  var version = chrome.app.getDetails().version;
+  $('#version').html('Version:  <a href="https://chrome.google.com/webstore/detail/tatrrace/mjhjmlmabiniamdimdbalnfeoodcogfl">'+version+'</a>');
+};
+
 var init = (function () {
+  getVersion();
   preloadCameras();
   loadConditions();
   loadAvalancheWarning();

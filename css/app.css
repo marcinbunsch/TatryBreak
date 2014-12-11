@@ -6,6 +6,9 @@ body {
   background-size: cover;
 }
 
+.left { float: left; }
+.right { float: right; }
+
 h3 {
   font-weight: 300;
   color: rgba(255,255,255,.3);
@@ -110,12 +113,14 @@ table .error span {
   left: 0;
   right: 0;
   padding: 2px 0;
-  text-align: center;
   text-shadow: 0 1px 0 rgba(0,0,0,.5);
   font-size: 12px;
   text-transform: uppercase;
   color: rgba(255,255,255,.3);
 }
+
+#footer .left { padding-left: 10px; }
+#footer .right { padding-right: 10px; }
 
 #footer a {
   color: rgba(255,255,255,.5);
