@@ -129,3 +129,7 @@ table .error span {
 #footer a {
   color: rgba(255,255,255,.5);
 }
+
+#canvas {
+  display: none;
+}

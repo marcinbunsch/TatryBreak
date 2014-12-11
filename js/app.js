@@ -36,6 +36,7 @@ var preloadCameras = function () {
 
     $('#' + v.id).html(images[k]);
   });
+
 };
 
 var loadConditions = function () {
@@ -107,9 +108,39 @@ var getVersion = function () {
   $('#version').html('Version:  <a href="https://chrome.google.com/webstore/detail/tatrrace/mjhjmlmabiniamdimdbalnfeoodcogfl">'+version+'</a>');
 };
 
-var init = (function () {
+var shareScreen = function (screen) {
+  var canvas, ctx, screenSrc, tmpImage;
+
+  canvas    = document.getElementById('canvas');
+  ctx       = canvas.getContext('2d');
+  screenSrc = $(screen).find('img').attr('src');
+
+  tmpImage      = document.createElement('img');
+  tmpImage.src  = screenSrc;
+  tmpImage.onload = function () {
+    ctx.drawImage(tmpImage, 0, 0);
+  };
+
+
+
+};
+
+
+(function () {
   getVersion();
   preloadCameras();
   loadConditions();
   loadAvalancheWarning();
 })();
+
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '1511193279162881',
+    xfbml      : true,
+    version    : 'v2.2'
+  });
+
+  FB.getLoginStatus(function(response) {
+    console.log( response.status )
+  });
+};
