@@ -50,16 +50,22 @@ var loadConditions = function () {
       var data = data;
 
       degrees.gor.temp = $(data).find('#gor').find('temperatura').find('aktualna').text();
+      degrees.gor.temp = degrees.gor.temp.length ? degrees.gor.temp : '';
+
       degrees.gor.wind = $(data).find('#gor').find('wiatr').find('silaAvg').text();
-      degrees.gor.wind = parseFloat( degrees.gor.wind ).toFixed(1);
+      degrees.gor.wind = degrees.gor.wind.length ? parseFloat( degrees.gor.wind ).toFixed(1) : '';
 
       degrees.ps.temp  = $(data).find('#ps').find('temperatura').find('aktualna').text();
+      degrees.ps.temp  = degrees.ps.temp.length ? degrees.ps.temp : '';
+
       degrees.ps.wind  = $(data).find('#ps').find('wiatr').find('silaAvg').text();
-      degrees.ps.wind  = parseFloat( degrees.ps.wind ).toFixed(1);
+      degrees.ps.wind  = degrees.ps.wind.length ? parseFloat( degrees.ps.wind ).toFixed(1) : '';
 
       degrees.mo.temp  = $(data).find('#mo').find('temperatura').find('aktualna').text();
+      degrees.mo.temp  = degrees.mo.temp.length ? degrees.mo.temp : '';
+
       degrees.mo.wind  = $(data).find('#mo').find('wiatr').find('silaAvg').text();
-      degrees.mo.wind  = parseFloat( degrees.mo.wind ).toFixed(1);
+      degrees.mo.wind  = degrees.mo.wind.length ? parseFloat( degrees.mo.wind ).toFixed(1) : '';
 
       appendTemp(degrees);
     }
@@ -68,8 +74,14 @@ var loadConditions = function () {
 };
 
 var appendTemp = function (degrees) {
+
   $.each(degrees, function (k, v) {
-    $('.' + k).append('<div class="condition"><i class="wi wi-thermometer"></i> ' + v.temp + ' <small>&deg;C</small> &nbsp;&nbsp; <i class="wi wi-strong-wind"></i> ' + v.wind + ' <small>m/s</small></div>');
+    var degrees, wind;
+
+    degrees = v.temp !== '' ? '<i class="wi wi-thermometer"></i> ' + v.temp + ' <small>&deg;C</small>' : '';
+    wind    = v.wind !== '' ? '<i class="wi wi-strong-wind"></i> ' + v.wind + ' <small>m/s</small>' : '';
+
+    $('.' + k).append('<div class="condition">' + degrees + ' ' + wind + '</div>');
   });
 };
 
