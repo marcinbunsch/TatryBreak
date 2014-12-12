@@ -11,8 +11,16 @@
     "128": "icon_128.png"
   },
 
-  "chrome_url_overrides": {
-    "newtab": "page.html"
+  "browser_action": {
+    "default_icon": {
+      "19": "icon_16.png",
+      "38": "icon_48.png"
+    },
+    "default_title": "Tatrrace"
+  },
+
+  "background":{
+    "scripts":["js/background.js"]
   },
 
   "permissions": [
