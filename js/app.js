@@ -99,20 +99,20 @@ var appendTemp = function (degrees) {
 };
 
 var loadAvalancheWarning = function () {
-  var warning = {}, labelHTML = '<a title="Czytaj cały komunikat" href="http://tpn.pl/zwiedzaj/komunikat-lawinowy"><i class="fa fa-info-circle"></i> Stopień zagrożenia lawinowego:</a>';
+  var warning = {};
 
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
     $('#tmp').html('');
 
     warning.icon = $(response).find('.avalanche').find('img[src*="avalanche"]');
-    warning.icon = labelHTML + ' <img src="http://tpn.pl/themes/' + warning.icon[0].src.split('/themes')[1] + '">';
+    warning.icon = '<img src="http://tpn.pl/themes/' + warning.icon[0].src.split('/themes')[1] + '">';
 
     appendAvalancheWarning(warning.icon);
   });
 };
 
 var appendAvalancheWarning = function (warning) {
-  $('#avalanches-warning').html(warning);
+  $('#avalanches-warning').find('a').html(warning);
 };
 
 var getVersion = function () {
@@ -120,9 +120,66 @@ var getVersion = function () {
   $('#version').html('Version:  <a href="https://chrome.google.com/webstore/detail/tatrrace/mjhjmlmabiniamdimdbalnfeoodcogfl">'+version+'</a>');
 };
 
+var getForecast = function () {
+  var apiURL, cityID, appID, lang, days;
+
+  apiURL = 'http://api.openweathermap.org/data/2.5/forecast/daily';
+  cityID = '3080866'; // Zakopane
+  appID  = '8713b46cd91183acd12d67c49c775b1a';
+  lang   = 'pl'
+  days   = 2;
+
+  var jqxhr = $.ajax({
+    type: 'GET',
+    url: apiURL,
+    data: {
+      'id'    : cityID,
+      'APPID' : appID,
+      'lang'  : lang,
+      'cnt'   : days
+    }
+  });
+
+  jqxhr
+    .done(function(response) {
+      appendForecast(response.list);
+    })
+    .fail(function() {
+
+    })
+    .always(function() {
+
+    })
+  ;
+};
+
+var appendForecast = function (forecast) {
+  var html = [], iconURL, dayTemp, nightTemp;
+
+
+  $.each(forecast, function() {
+    iconURL   = 'http://openweathermap.org/img/w/' + this.weather[0].icon + '.png';
+    tempDay   = this.temp.day;
+    tempNight = this.temp.night;
+
+    html[html.length] = '<div class="weather">';
+    html[html.length] = '<img src="'+ iconURL +'">';
+    html[html.length] = '<span class="temp day">'+ Kelvin2Celcius(tempDay) +' &deg;C</span>';
+    html[html.length] = '<span class="temp night">'+ Kelvin2Celcius(tempNight) +' &deg;C</span>';
+    html[html.length] = '</div>';
+  });
+
+  $('#forecast').append(html.join('\t'));
+};
+
+var Kelvin2Celcius = function (deg) {
+  return (deg - 273.15).toFixed(0);
+};
+
 var init = (function () {
   getVersion();
   preloadCameras();
   loadConditions();
   loadAvalancheWarning();
+  getForecast();
 })();

@@ -84,31 +84,61 @@ table .error span {
   text-transform: uppercase;
   position: relative;
   top: 50%;
-  transform: transitionY(-50%)
+  transform: translate(0,-50%);
 
+}
+
+#header {
+  position: relative;
+}
+
+#statements {
+  position: absolute;
+  top: 22px;
+  right: 15px;
 }
 
 #avalanches-warning {
-  background-color: rgba(255,255,255,.9);
-  position: absolute;
-  top: 22px;
-  right: 20px;
-  padding: 10px 80px 10px 15px;
-  font-size: 14px;
-  border-radius: 20px;
+  float: left;
+}
+
+#avalanches-warning a {
+  display: block;
+  overflow: hidden;
+  width: 50px;
+  text-align: center;
 }
 
 #avalanches-warning img {
-  vertical-align: top;
-  margin-left: 10px;
-  height: 24px;
-  position: absolute;
-  top: 6px;
-  right: 10px;
+  width: 80px;
+  margin-left: -24px;
 }
 
 #avalanches-warning .fa {
   font-size: 16px;
+  margin-top: 10px;
+}
+
+#forecast {
+  float: left;
+}
+
+.weather {
+  float: left;
+  margin: 0 10px;
+}
+
+.weather img {
+  vertical-align: middle;
+}
+
+.temp {
+  color: #fff;
+  margin: 0 5px;
+}
+
+.temp.night {
+  opacity: .3;
 }
 
 #footer {
