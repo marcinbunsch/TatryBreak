@@ -157,15 +157,18 @@ var appendForecast = function (forecast) {
   var html = [], iconURL, dayTemp, nightTemp;
 
 
-  $.each(forecast, function() {
+  $.each(forecast, function(k) {
     iconURL   = 'http://openweathermap.org/img/w/' + this.weather[0].icon + '.png';
     tempDay   = this.temp.day;
     tempNight = this.temp.night;
 
     html[html.length] = '<div class="weather">';
-    html[html.length] = '<img src="'+ iconURL +'">';
-    html[html.length] = '<span class="temp day">'+ Kelvin2Celcius(tempDay) +' &deg;C</span>';
-    html[html.length] = '<span class="temp night">'+ Kelvin2Celcius(tempNight) +' &deg;C</span>';
+    html[html.length] =   '<img src="'+ iconURL +'">';
+    html[html.length] =   '<div class="info">';
+    html[html.length] =     '<span class="temp day">'+ Kelvin2Celcius(tempDay) +' &deg;C</span>';
+    html[html.length] =     '<span class="temp night">'+ Kelvin2Celcius(tempNight) +' &deg;C</span>';
+    html[html.length] =     '<span class="weekday">' + (k === 0 ? "Dziś" : "Jutro") + '</span>';
+    html[html.length] =   '</div>';
     html[html.length] = '</div>';
   });
 
