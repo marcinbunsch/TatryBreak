@@ -170,7 +170,7 @@ var appendForecast = function (forecast) {
       temp = $(forecast[k]).find('temperature').attr('value');
       timeOfDay = periot === '0' ? 'noc' : 'dzień';
 
-      if (date === nextDate) {
+      if (date === nextDate || k === 1) {
         html[html.length] = '<h4 class="section-header">'+ date +'</h4>';
       }
 
