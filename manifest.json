@@ -17,6 +17,7 @@
 
   "permissions": [
     "http://www.test.tatrynet.pl/*",
-    "http://tpn.pl/*"
+    "http://tpn.pl/*",
+    "http://www.yr.no/*"
   ]
 }

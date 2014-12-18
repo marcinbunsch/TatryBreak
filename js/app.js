@@ -99,20 +99,24 @@ var appendTemp = function (degrees) {
 };
 
 var loadAvalancheWarning = function () {
-  var warning = {};
-
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
     $('#tmp').html('');
 
-    warning.icon = $(response).find('.avalanche').find('img[src*="avalanche"]');
-    warning.icon = '<img src="http://tpn.pl/themes/' + warning.icon[0].src.split('/themes')[1] + '">';
+    response = $(response).find('p.degree');
 
-    appendAvalancheWarning(warning.icon);
+    appendAvalancheWarning(response);
   });
 };
 
-var appendAvalancheWarning = function (warning) {
-  $('#avalanches-warning').find('a').html(warning);
+var appendAvalancheWarning = function (data) {
+  var html = [];
+
+  html[html.length] = '<img src="http://tpn.pl/' + data.find('img').attr('src') +'">';
+  data.find('img').remove();
+  html[html.length] = data.text().replace('zagrożenia lawinowego', '');
+
+
+  $('#avalanches-warning').find('a').html(html.join('\t'));
 };
 
 var getVersion = function () {
@@ -123,26 +127,19 @@ var getVersion = function () {
 var getForecast = function () {
   var apiURL, cityID, appID, lang, days;
 
-  apiURL = 'http://api.openweathermap.org/data/2.5/forecast/daily';
-  cityID = '3080866'; // Zakopane
-  appID  = '8713b46cd91183acd12d67c49c775b1a';
-  lang   = 'pl'
-  days   = 2;
+  apiURL = 'http://www.yr.no/place/Poland/Lesser_Poland/Kasprowy_Wierch/forecast.xml';
+
 
   var jqxhr = $.ajax({
-    type: 'GET',
-    url: apiURL,
-    data: {
-      'id'    : cityID,
-      'APPID' : appID,
-      'lang'  : lang,
-      'cnt'   : days
-    }
+    type  : 'GET',
+    url   : apiURL
   });
 
   jqxhr
     .done(function(response) {
-      appendForecast(response.list);
+      
+      appendForecast(response);
+
     })
     .fail(function() {
 
@@ -154,29 +151,76 @@ var getForecast = function () {
 };
 
 var appendForecast = function (forecast) {
-  var html = [], iconURL, dayTemp, nightTemp;
+  var html = [], forecast, periot, date, nextDate, icon, temp, timeOfDay;
 
+  forecast = $(forecast).find('forecast').find('time');
 
   $.each(forecast, function(k) {
-    iconURL   = 'http://openweathermap.org/img/w/' + this.weather[0].icon + '.png';
-    tempDay   = this.temp.day;
-    tempNight = this.temp.night;
+    periot = $(forecast[k]).attr('period');
 
-    html[html.length] = '<div class="weather">';
-    html[html.length] =   '<img src="'+ iconURL +'">';
-    html[html.length] =   '<div class="info">';
-    html[html.length] =     '<span class="temp day">'+ Kelvin2Celcius(tempDay) +' &deg;C</span>';
-    html[html.length] =     '<span class="temp night">'+ Kelvin2Celcius(tempNight) +' &deg;C</span>';
-    html[html.length] =     '<span class="weekday">' + (k === 0 ? "Dziś" : "Jutro") + '</span>';
-    html[html.length] =   '</div>';
-    html[html.length] = '</div>';
+    if (periot === '0' || periot === '2') {
+
+      date = $(forecast[k]).attr('from');
+      date = date2weekday(date);
+      nextDate = $(forecast[k+2]).attr('from');
+      nextDate = date2weekday(nextDate);
+
+      icon = $(forecast[k]).find('symbol').attr('var');
+      icon = 'http://symbol.yr.no/grafikk/sym/b100/' + icon + '.png';
+      temp = $(forecast[k]).find('temperature').attr('value');
+      timeOfDay = periot === '0' ? 'noc' : 'dzień';
+
+      if (date === nextDate) {
+        html[html.length] = '<h4 class="section-header">'+ date +'</h4>';
+      }
+
+      html[html.length] = '<div class="weather">';
+      html[html.length] =   '<img src="'+ icon +'">';
+      html[html.length] =   '<div class="info">';
+      html[html.length] =     '<span class="temp">'+ temp +' &deg;C</span>';
+      html[html.length] =     '<span class="day-label">' + timeOfDay + '</span>';
+      html[html.length] =   '</div>';
+      html[html.length] = '</div>';
+    }
+
+    if (k > 9) {
+      return false;
+    }
   });
 
-  $('#forecast').append(html.join('\t'));
+  $('#forecast').append(html.join('\n'));
 };
 
-var Kelvin2Celcius = function (deg) {
-  return (deg - 273.15).toFixed(0);
+
+var date2weekday = function (date) {
+  date = new Date(date);
+
+  return getWeekdayName(date.getDay());
+};
+
+
+var getWeekdayName = function (day) {
+  var weekday = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela'];
+
+  return weekday[day];
+};
+
+var toggleSidebar = function () {
+  var $button, $page, offset;
+
+  $button = $(this);
+  $page   = $('#page');
+  offset  = 300;
+
+  if ($button.hasClass('active')) {
+    offset = 0;
+  }
+
+  $button.toggleClass('active');
+
+  $page.css({
+    transform: 'translate3d(-'+offset+'px,0,0)'
+  })
 };
 
 var init = (function () {
@@ -185,4 +229,7 @@ var init = (function () {
   loadConditions();
   loadAvalancheWarning();
   getForecast();
+
+
+  $('#toggle-sidebar').on('click', toggleSidebar).click();
 })();

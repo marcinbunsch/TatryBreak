@@ -1,9 +1,7 @@
 * { margin: 0; padding: 0; }
 
 body {
-  background: #101010 url(../images/bg.jpg) no-repeat scroll 50% 0;
   font-family: 'Open Sans', Arial, sans-serif;
-  background-size: cover;
 }
 
 .left { float: left; }
@@ -35,6 +33,83 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+
+/*
+    PAGE STRUCTURE
+*/
+
+#container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #1d1f21;
+}
+
+#page {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #101010 url(../images/bg.jpg) no-repeat scroll 50% 0;
+  background-size: cover;
+  transition: all 250ms;
+  position: relative;
+  z-index: 2;
+  box-shadow: 3px 0 8px rgba(0,0,0,.4);
+}
+
+
+#sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  z-index: 1;
+}
+
+#toggle-sidebar {
+  position: absolute;
+  top: 22px;
+  right: 30px;
+  padding: 5px;
+  color: #fff;
+  font-size: 24px;
+  opacity: .8;
+}
+
+#toggle-sidebar:hover {
+  text-decoration: none;
+  opacity: 1;
+}
+
+#header {
+  position: relative;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+
+#footer .left { padding-left: 10px; }
+#footer .right { padding-right: 10px; }
+
+#footer a {
+  color: rgba(255,255,255,.5);
+}
+
+
+/*
+    CAMERAS
+*/
 
 table td {
   position: relative;
@@ -88,30 +163,45 @@ table .error span {
 
 }
 
-#header {
-  position: relative;
+/*
+    SIDEBAR INFORMATIONS
+*/
+.content {
+  padding: 15px;
 }
 
-#statements {
-  position: absolute;
-  top: 20px;
-  right: 15px;
+.sidebar-section {
+  padding: 10px 0;
+  margin: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
 }
 
-#avalanches-warning {
-  float: left;
+.section-header {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+#sidebar h2 {
+  margin: 15px 0 20px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
 }
 
 #avalanches-warning a {
   display: block;
   overflow: hidden;
-  width: 50px;
-  text-align: center;
+  line-height: 39px;
+  padding-left: 5px;
 }
 
 #avalanches-warning img {
   width: 80px;
-  margin: 4px 0 0 -24px;
+  margin: 0 0 0 -25px;
+  vertical-align: middle;
 }
 
 #avalanches-warning .fa {
@@ -120,64 +210,53 @@ table .error span {
 }
 
 #forecast {
-  float: left;
-  margin-right: 20px;
+  overflow: hidden;
+  padding-bottom: 0;
 }
 
 .weather {
-  float: left;
-  margin: 0 10px;
   position: relative;
   padding-left: 50px;
   height: 50px;
   color: #fff;
+  width: 50%;
+  float: left;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+#forecast .section-header {
+  clear: both;
+  margin-bottom: 2px;
 }
 
 .weather img {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 2px;
+  width: 40px;
+  height: 40px;
 }
 
 .weather .info {
-  padding-top: 6px;
+  padding-top: 5px;
 }
 
-.weather .weekday {
+.weather .day-label {
   display: block;
-  margin-left: 5px;
   text-transform: uppercase;
   font-size: 10px;
   opacity: .5;
 }
 
 .temp {
-  margin: 0 5px;
+  display: block;
+  font-size: 18px;
 }
 
-.temp.night {
-  opacity: .4;
-  color: #000;
-}
-
-#footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2px 0;
-  text-shadow: 0 1px 0 rgba(0,0,0,.5);
-  font-size: 12px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.3);
-}
-
-#footer .left { padding-left: 10px; }
-#footer .right { padding-right: 10px; }
-
-#footer a {
-  color: rgba(255,255,255,.5);
-}
+/*
+    LIGHTBOX FOR CAMERAS
+*/
 
 #imagelightbox {
   position: fixed;
