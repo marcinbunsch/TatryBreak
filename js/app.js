@@ -137,7 +137,7 @@ var getForecast = function () {
 
   jqxhr
     .done(function(response) {
-      
+
       appendForecast(response);
 
     })
@@ -231,5 +231,5 @@ var init = (function () {
   getForecast();
 
 
-  $('#toggle-sidebar').on('click', toggleSidebar).click();
+  $('#toggle-sidebar').on('click', toggleSidebar);
 })();
