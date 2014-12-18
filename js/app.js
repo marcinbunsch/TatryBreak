@@ -151,14 +151,14 @@ var getForecast = function () {
 };
 
 var appendForecast = function (forecast) {
-  var html = [], forecast, periot, date, nextDate, icon, temp, timeOfDay;
+  var html = [], forecast, period, date, nextDate, icon, temp, timeOfDay;
 
   forecast = $(forecast).find('forecast').find('time');
 
   $.each(forecast, function(k) {
-    periot = $(forecast[k]).attr('period');
+    period = $(forecast[k]).attr('period');
 
-    if (periot === '0' || periot === '2') {
+    if (period === '0' || period === '2') {
 
       date = $(forecast[k]).attr('from');
       date = date2weekday(date);
@@ -168,7 +168,7 @@ var appendForecast = function (forecast) {
       icon = $(forecast[k]).find('symbol').attr('var');
       icon = 'http://symbol.yr.no/grafikk/sym/b100/' + icon + '.png';
       temp = $(forecast[k]).find('temperature').attr('value');
-      timeOfDay = periot === '0' ? 'noc' : 'dzień';
+      timeOfDay = period === '0' ? 'noc' : 'dzień';
 
       if (date === nextDate || k === 1) {
         html[html.length] = '<h4 class="section-header">'+ date +'</h4>';
