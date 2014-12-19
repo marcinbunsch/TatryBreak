@@ -2,6 +2,7 @@
 
 body {
   font-family: 'Open Sans', Arial, sans-serif;
+  background-color: #000;
 }
 
 .left { float: left; }
@@ -182,6 +183,7 @@ table .error span {
   color: rgba(255,255,255,.3);
   text-transform: uppercase;
   margin-bottom: 10px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.2)
 }
 
 #sidebar h2 {
@@ -219,10 +221,18 @@ table .error span {
   padding-left: 50px;
   height: 50px;
   color: #fff;
-  width: 50%;
+  width: 45%;
+  margin-left: 5%;
   float: left;
   margin-bottom: 20px;
   box-sizing: border-box;
+}
+
+.weather-header {
+  clear: both;
+  color: #666;
+  font-weight: 400;
+  text-transform: capitalize;
 }
 
 #forecast .section-header {

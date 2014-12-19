@@ -42,10 +42,10 @@ var preloadCameras = function () {
     preloadNext:    false,
     quitOnImgClick: true,
     onStart:        function() {
-                        $('#page').animate({ opacity: 0.35 });
+                        $('#container').animate({ opacity: 0.35 });
                     },
     onEnd:          function() {
-                        $('#page').animate({ opacity: 1 });
+                        $('#container').animate({ opacity: 1 });
                     }
   });
 
@@ -139,6 +139,7 @@ var getForecast = function () {
     .done(function(response) {
 
       appendForecast(response);
+      console.log(response)
 
     })
     .fail(function() {
@@ -151,7 +152,7 @@ var getForecast = function () {
 };
 
 var appendForecast = function (forecast) {
-  var html = [], forecast, period, date, nextDate, icon, temp, timeOfDay;
+  var html = [], forecast, period, date, nextDate, icon, temp, timeOfDay, periodCount = 0;
 
   forecast = $(forecast).find('forecast').find('time');
 
@@ -159,6 +160,8 @@ var appendForecast = function (forecast) {
     period = $(forecast[k]).attr('period');
 
     if (period === '0' || period === '2') {
+
+      periodCount++;
 
       date = $(forecast[k]).attr('from');
       date = date2weekday(date);
@@ -170,8 +173,9 @@ var appendForecast = function (forecast) {
       temp = $(forecast[k]).find('temperature').attr('value');
       timeOfDay = period === '0' ? 'noc' : 'dzień';
 
-      if (date === nextDate || k === 1) {
-        html[html.length] = '<h4 class="section-header">'+ date +'</h4>';
+
+      if (date === nextDate || k === 0) {
+        html[html.length] = '<h4 class="weather-header">'+ date +'</h4>';
       }
 
       html[html.length] = '<div class="weather">';
@@ -183,7 +187,7 @@ var appendForecast = function (forecast) {
       html[html.length] = '</div>';
     }
 
-    if (k > 9) {
+    if (periodCount > 4) {
       return false;
     }
   });
@@ -200,7 +204,7 @@ var date2weekday = function (date) {
 
 
 var getWeekdayName = function (day) {
-  var weekday = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela'];
+  var weekday = ['niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota'];
 
   return weekday[day];
 };
