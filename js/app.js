@@ -139,7 +139,6 @@ var getForecast = function () {
     .done(function(response) {
 
       appendForecast(response);
-      console.log(response)
 
     })
     .fail(function() {
@@ -187,7 +186,7 @@ var appendForecast = function (forecast) {
       html[html.length] = '</div>';
     }
 
-    if (periodCount > 4) {
+    if (periodCount > 4 && date !== nextDate) {
       return false;
     }
   });
