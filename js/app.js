@@ -1,3 +1,15 @@
+var storeData = function (object) {
+  chrome.storage.sync.set(object);
+};
+
+var restoreData = function (key, callback) {
+  chrome.storage.sync.get(key, callback);
+};
+
+var isExpired = function (timeFrom, timeTo, expiryTime) {
+  return timeTo - timeFrom >= expiryTime;
+}
+
 var preloadCameras = function () {
   var cameras, i = 0;
 
@@ -98,22 +110,56 @@ var appendTemp = function (degrees) {
   });
 };
 
-var loadAvalancheWarning = function () {
+var fetchAvalancheWarning = function () {
+  console.log('Fetch avalanche warning');
+
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
+    var data = {};
+
     $('#tmp').html('');
 
     response = $(response).find('p.degree');
 
-    appendAvalancheWarning(response);
+    data.icon = response.find('img').attr('src');
+    response.find('img').remove();
+    data.text = response.text().replace('zagrożenia lawinowego', '');
+    data.text = data.text.replace(/\s+/g, ' ');
+    data.timestamp = new Date().getTime();
+
+    storeData({ 'avalanche': data });
+    appendAvalancheWarning(data);
   });
+};
+
+
+var getAvalancheWarning = function () {
+  var data, timestamp, expiredTime;
+
+  data        = {};
+  timestamp   = new Date().getTime();
+  expiredTime = 6*60*60*1000; // 6 hours
+
+  restoreData('avalanche', function (items) {
+
+    if ( !$.isEmptyObject(items) && !isExpired(items['avalanche'].timestamp, timestamp, expiredTime) ) {
+      console.log('Restore avalanche warning');
+
+      data = items['avalanche'];
+      appendAvalancheWarning(data)
+
+    } else {
+      fetchAvalancheWarning();
+    }
+
+  });
+
 };
 
 var appendAvalancheWarning = function (data) {
   var html = [];
 
-  html[html.length] = '<img src="http://tpn.pl/' + data.find('img').attr('src') +'">';
-  data.find('img').remove();
-  html[html.length] = data.text().replace('zagrożenia lawinowego', '');
+  html[html.length] = '<img src="http://tpn.pl/' + data.icon +'">';
+  html[html.length] = data.text;
 
 
   $('#avalanches-warning').find('a').html(html.join('\t'));
@@ -230,7 +276,7 @@ var init = (function () {
   getVersion();
   preloadCameras();
   loadConditions();
-  loadAvalancheWarning();
+  getAvalancheWarning();
   getForecast();
 
 
