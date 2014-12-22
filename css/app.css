@@ -196,14 +196,22 @@ table .error span {
 #avalanches-warning a {
   display: block;
   overflow: hidden;
-  line-height: 39px;
-  padding-left: 5px;
+}
+
+#avalanches-warning .icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+  vertical-align: middle;
+  border-radius: 25px;
+  background-color: rgba(255,255,255,.7);
+  margin-right: 10px;
 }
 
 #avalanches-warning img {
-  width: 80px;
-  margin: 0 0 0 -25px;
-  vertical-align: middle;
+  width: 38px;
+  margin-top: 5px;
 }
 
 #avalanches-warning .fa {

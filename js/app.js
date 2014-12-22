@@ -158,7 +158,9 @@ var getAvalancheWarning = function () {
 var appendAvalancheWarning = function (data) {
   var html = [];
 
-  html[html.length] = '<img src="http://tpn.pl/' + data.icon +'">';
+  html[html.length] = '<span class="icon">';
+  html[html.length] =   '<img src="http://tpn.pl/' + data.icon +'">';
+  html[html.length] = '</span>';
   html[html.length] = data.text;
 
 
