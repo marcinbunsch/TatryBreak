@@ -137,7 +137,7 @@ var getAvalancheWarning = function () {
 
   data        = {};
   timestamp   = new Date().getTime();
-  expiredTime = 6*60*60*1000; // 6 hours
+  expiredTime = 2*60*60*1000; // 2 hours
 
   restoreData('avalanche', function (items) {
 
@@ -152,7 +152,6 @@ var getAvalancheWarning = function () {
     }
 
   });
-
 };
 
 var appendAvalancheWarning = function (data) {
@@ -172,11 +171,44 @@ var getVersion = function () {
   $('#version').html('Version:  <a href="https://chrome.google.com/webstore/detail/tatrrace/mjhjmlmabiniamdimdbalnfeoodcogfl">'+version+'</a>');
 };
 
-var getForecast = function () {
+var processForecast = function (data, callback) {
+  var obj = {}, forecast = [], period, day, temp, icon, timeOfDay, periodsCount;
+
+  periodsCount = 0;
+
+  data = $(data).find('forecast').find('time');
+
+  $.each(data, function(k) {
+    period = $(data[k]).attr('period');
+
+    if (period === '0' || period === '2') {
+
+      periodsCount++;
+
+      day       = $(data[k]).attr('from');
+      temp      = $(data[k]).find('temperature').attr('value');
+      icon      = $(data[k]).find('symbol').attr('var');
+      timeOfDay = period === '0' ? 'noc' : 'dzień';
+
+      forecast[forecast.length] = { day: day, temp: temp, icon: icon, timeOfDay: timeOfDay };
+    }
+  });
+
+
+  obj.forecast = forecast;
+  obj.timestamp = new Date().getTime();
+
+  storeData({ 'forecast': obj });
+  appendForecast(obj.forecast);
+
+};
+
+var fetchForecast = function () {
   var apiURL, cityID, appID, lang, days;
 
   apiURL = 'http://www.yr.no/place/Poland/Lesser_Poland/Kasprowy_Wierch/forecast.xml';
 
+  console.log('Fetch forecast');
 
   var jqxhr = $.ajax({
     type  : 'GET',
@@ -184,11 +216,7 @@ var getForecast = function () {
   });
 
   jqxhr
-    .done(function(response) {
-
-      appendForecast(response);
-
-    })
+    .done(processForecast)
     .fail(function() {
 
     })
@@ -198,46 +226,54 @@ var getForecast = function () {
   ;
 };
 
-var appendForecast = function (forecast) {
-  var html = [], forecast, period, date, nextDate, icon, temp, timeOfDay, periodCount = 0;
+var getForecast = function () {
+  var data, timestamp, expiredTime;
 
-  forecast = $(forecast).find('forecast').find('time');
+  data        = {};
+  timestamp   = new Date().getTime();
+  expiredTime = 1*60*60*1000; // 1 hours
 
-  $.each(forecast, function(k) {
-    period = $(forecast[k]).attr('period');
+  restoreData('forecast', function (items) {
 
-    if (period === '0' || period === '2') {
+    if ( !$.isEmptyObject(items) && !isExpired(items['forecast'].timestamp, timestamp, expiredTime) ) {
+      console.log('Restore forecast');
 
-      periodCount++;
+      data = items['forecast'];
+      appendForecast(data.forecast)
 
-      date = $(forecast[k]).attr('from');
-      date = date2weekday(date);
-      nextDate = $(forecast[k+2]).attr('from');
-      nextDate = date2weekday(nextDate);
-
-      icon = $(forecast[k]).find('symbol').attr('var');
-      icon = 'http://symbol.yr.no/grafikk/sym/b100/' + icon + '.png';
-      temp = $(forecast[k]).find('temperature').attr('value');
-      timeOfDay = period === '0' ? 'noc' : 'dzień';
-
-
-      if (date === nextDate || k === 0) {
-        html[html.length] = '<h4 class="weather-header">'+ date +'</h4>';
-      }
-
-      html[html.length] = '<div class="weather">';
-      html[html.length] =   '<img src="'+ icon +'">';
-      html[html.length] =   '<div class="info">';
-      html[html.length] =     '<span class="temp">'+ temp +' &deg;C</span>';
-      html[html.length] =     '<span class="day-label">' + timeOfDay + '</span>';
-      html[html.length] =   '</div>';
-      html[html.length] = '</div>';
+    } else {
+      fetchForecast();
     }
 
-    if (periodCount > 4 && date !== nextDate) {
-      return false;
-    }
   });
+};
+
+var appendForecast = function (forecast) {
+  var html = [], icon, day, nextDay, timeOfDay;
+
+  for (var i = 0, len = forecast.length; i < len; i++ ) {
+
+    icon    = 'http://symbol.yr.no/grafikk/sym/b100/' + forecast[i].icon + '.png';
+    day     = date2weekday(forecast[i].day);
+    nextDay = forecast[i+1] ? date2weekday(forecast[i+1].day) : 0;
+
+    if (day === nextDay || i === 0) {
+      html[html.length] = '<h4 class="weather-header">'+ day +'</h4>';
+    }
+
+    html[html.length] = '<div class="weather">';
+    html[html.length] =   '<img src="'+ icon +'">';
+    html[html.length] =   '<div class="info">';
+    html[html.length] =     '<span class="temp">'+ forecast[i].temp +' &deg;C</span>';
+    html[html.length] =     '<span class="day-label">' + forecast[i].timeOfDay + '</span>';
+    html[html.length] =   '</div>';
+    html[html.length] = '</div>';
+
+    if (i > 4 && day != nextDay) { // Limit of 3 days
+      break;
+    }
+
+  };
 
   $('#forecast').append(html.join('\n'));
 };
