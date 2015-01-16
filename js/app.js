@@ -1,3 +1,15 @@
+var storeData = function (object) {
+  chrome.storage.sync.set(object);
+};
+
+var restoreData = function (key, callback) {
+  chrome.storage.sync.get(key, callback);
+};
+
+var isExpired = function (timeFrom, timeTo, expiryTime) {
+  return timeTo - timeFrom >= expiryTime;
+}
+
 var preloadCameras = function () {
   var cameras, i = 0;
 
@@ -42,10 +54,10 @@ var preloadCameras = function () {
     preloadNext:    false,
     quitOnImgClick: true,
     onStart:        function() {
-                        $('#page').animate({ opacity: 0.35 });
+                        $('#container').animate({ opacity: 0.35 });
                     },
     onEnd:          function() {
-                        $('#page').animate({ opacity: 1 });
+                        $('#container').animate({ opacity: 1 });
                     }
   });
 
@@ -98,21 +110,60 @@ var appendTemp = function (degrees) {
   });
 };
 
-var loadAvalancheWarning = function () {
-  var warning = {}, labelHTML = '<a title="Czytaj cały komunikat" href="http://tpn.pl/zwiedzaj/komunikat-lawinowy"><i class="fa fa-info-circle"></i> Stopień zagrożenia lawinowego:</a>';
+var fetchAvalancheWarning = function () {
+  console.log('Fetch avalanche warning');
 
   $('#tmp').load('http://tpn.pl/zwiedzaj/komunikat-lawinowy .degree', function (response, status, xhr) {
+    var data = {};
+
     $('#tmp').html('');
 
-    warning.icon = $(response).find('.avalanche').find('img[src*="avalanche"]');
-    warning.icon = labelHTML + ' <img src="http://tpn.pl/themes/' + warning.icon[0].src.split('/themes')[1] + '">';
+    response = $(response).find('p.degree');
 
-    appendAvalancheWarning(warning.icon);
+    data.icon = response.find('img').attr('src');
+    response.find('img').remove();
+    data.text = response.text().replace('zagrożenia lawinowego', '');
+    data.text = data.text.replace(/\s+/g, ' ');
+    data.timestamp = new Date().getTime();
+
+    storeData({ 'avalanche': data });
+    appendAvalancheWarning(data);
   });
 };
 
-var appendAvalancheWarning = function (warning) {
-  $('#avalanches-warning').html(warning);
+
+var getAvalancheWarning = function () {
+  var data, timestamp, expiredTime;
+
+  data        = {};
+  timestamp   = new Date().getTime();
+  expiredTime = 2*60*60*1000; // 2 hours
+
+  restoreData('avalanche', function (items) {
+
+    if ( !$.isEmptyObject(items) && !isExpired(items['avalanche'].timestamp, timestamp, expiredTime) ) {
+      console.log('Restore avalanche warning');
+
+      data = items['avalanche'];
+      appendAvalancheWarning(data)
+
+    } else {
+      fetchAvalancheWarning();
+    }
+
+  });
+};
+
+var appendAvalancheWarning = function (data) {
+  var html = [];
+
+  html[html.length] = '<span class="icon">';
+  html[html.length] =   '<img src="http://tpn.pl/' + data.icon +'">';
+  html[html.length] = '</span>';
+  html[html.length] = data.text;
+
+
+  $('#avalanches-warning').find('a').html(html.join('\t'));
 };
 
 var getVersion = function () {
@@ -120,9 +171,152 @@ var getVersion = function () {
   $('#version').html('Version:  <a href="https://chrome.google.com/webstore/detail/tatrrace/mjhjmlmabiniamdimdbalnfeoodcogfl">'+version+'</a>');
 };
 
+var processForecast = function (data, callback) {
+  var obj = {}, forecast = [], period, day, temp, icon, timeOfDay, periodsCount;
+
+  periodsCount = 0;
+
+  data = $(data).find('forecast').find('time');
+
+  $.each(data, function(k) {
+    period = $(data[k]).attr('period');
+
+    if (period === '0' || period === '2') {
+
+      periodsCount++;
+
+      day       = $(data[k]).attr('from');
+      temp      = $(data[k]).find('temperature').attr('value');
+      icon      = $(data[k]).find('symbol').attr('var');
+      timeOfDay = period === '0' ? 'noc' : 'dzień';
+
+      forecast[forecast.length] = { day: day, temp: temp, icon: icon, timeOfDay: timeOfDay };
+    }
+  });
+
+
+  obj.forecast = forecast;
+  obj.timestamp = new Date().getTime();
+
+  storeData({ 'forecast': obj });
+  appendForecast(obj.forecast);
+
+};
+
+var fetchForecast = function () {
+  var apiURL, cityID, appID, lang, days;
+
+  apiURL = 'http://www.yr.no/place/Poland/Lesser_Poland/Kasprowy_Wierch/forecast.xml';
+
+  console.log('Fetch forecast');
+
+  var jqxhr = $.ajax({
+    type  : 'GET',
+    url   : apiURL
+  });
+
+  jqxhr
+    .done(processForecast)
+    .fail(function() {
+
+    })
+    .always(function() {
+
+    })
+  ;
+};
+
+var getForecast = function () {
+  var data, timestamp, expiredTime;
+
+  data        = {};
+  timestamp   = new Date().getTime();
+  expiredTime = 1*60*60*1000; // 1 hours
+
+  restoreData('forecast', function (items) {
+
+    if ( !$.isEmptyObject(items) && !isExpired(items['forecast'].timestamp, timestamp, expiredTime) ) {
+      console.log('Restore forecast');
+
+      data = items['forecast'];
+      appendForecast(data.forecast)
+
+    } else {
+      fetchForecast();
+    }
+
+  });
+};
+
+var appendForecast = function (forecast) {
+  var html = [], icon, day, nextDay, timeOfDay;
+
+  for (var i = 0, len = forecast.length; i < len; i++ ) {
+
+    icon    = 'http://symbol.yr.no/grafikk/sym/b100/' + forecast[i].icon + '.png';
+    day     = date2weekday(forecast[i].day);
+    nextDay = forecast[i+1] ? date2weekday(forecast[i+1].day) : 0;
+
+    if (day === nextDay || i === 0) {
+      html[html.length] = '<h4 class="weather-header">'+ day +'</h4>';
+    }
+
+    html[html.length] = '<div class="weather">';
+    html[html.length] =   '<img src="'+ icon +'">';
+    html[html.length] =   '<div class="info">';
+    html[html.length] =     '<span class="temp">'+ forecast[i].temp +' &deg;C</span>';
+    html[html.length] =     '<span class="day-label">' + forecast[i].timeOfDay + '</span>';
+    html[html.length] =   '</div>';
+    html[html.length] = '</div>';
+
+    if (i > 4 && day != nextDay) { // Limit of 3 days
+      break;
+    }
+
+  };
+
+  $('#forecast').append(html.join('\n'));
+};
+
+
+var date2weekday = function (date) {
+  date = new Date(date);
+
+  return getWeekdayName(date.getDay());
+};
+
+
+var getWeekdayName = function (day) {
+  var weekday = ['niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota'];
+
+  return weekday[day];
+};
+
+var toggleSidebar = function () {
+  var $button, $page, offset;
+
+  $button = $(this);
+  $page   = $('#page');
+  offset  = 300;
+
+  if ($button.hasClass('active')) {
+    offset = 0;
+  }
+
+  $button.toggleClass('active');
+
+  $page.css({
+    transform: 'translate3d(-'+offset+'px,0,0)'
+  })
+};
+
 var init = (function () {
   getVersion();
   preloadCameras();
   loadConditions();
-  loadAvalancheWarning();
+  getAvalancheWarning();
+  getForecast();
+
+
+  $('#toggle-sidebar').on('click', toggleSidebar);
 })();

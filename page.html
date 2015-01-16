@@ -9,41 +9,59 @@
     <link href='css/weather-icons.css' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <div id="page">
-      <h3><strong>Tatrrace</strong> &mdash; Aktualny podgląd na warunki pogodowe w Tatrach</h3>
-      <table width="100%" height="500">
-        <tr>
-          <td class="mo">
-            <div id="mo1" class="cameras"></div>
-          </td>
-          <td class="ps">
-            <div id="ps1" class="cameras"></div>
-          </td>
-          <td class="gor">
-            <div id="gor" class="cameras"></div>
-          </td>
-        </tr>
+    <div id="container">
+      <div id="page">
+        <header id="header">
+          <h3><strong>Tatrrace</strong> &mdash; Aktualny podgląd na warunki pogodowe w Tatrach</h3>
+          <a id="toggle-sidebar" class="fa fa-bars" href="#"></a>
+        </header>
+        <table width="100%" height="500">
+          <tr>
+            <td class="mo">
+              <div id="mo1" class="cameras"></div>
+            </td>
+            <td class="ps">
+              <div id="ps1" class="cameras"></div>
+            </td>
+            <td class="gor">
+              <div id="gor" class="cameras"></div>
+            </td>
+          </tr>
 
-        <tr>
-          <td class="mo">
-            <div id="mo2" class="cameras"></div>
-          </td>
-          <td class="ps">
-            <div id="ps2" class="cameras"></div>
-          </td>
-          <td class="cho">
-            <div id="cho" class="cameras"></div>
-          </td>
-        </tr>
-      </table>
+          <tr>
+            <td class="mo">
+              <div id="mo2" class="cameras"></div>
+            </td>
+            <td class="ps">
+              <div id="ps2" class="cameras"></div>
+            </td>
+            <td class="cho">
+              <div id="cho" class="cameras"></div>
+            </td>
+          </tr>
+        </table>
 
-      <div id="footer">
-        <p class="left">&copy; 2014 TATRRACE. All rights reserved. &nbsp; Made with love for Tatra Mountains by <a href="mailto:jpelczynski@gmail.com?subject=Feedback from Tatrrace">Jarek Pelczynski</a>.</p>
-        <p class="right" id="version"></p>
+        <div id="footer">
+          <p class="left">&copy; 2014 TATRRACE. All rights reserved. &nbsp; Made with love for Tatra Mountains by <a href="mailto:jpelczynski@gmail.com?subject=Feedback from Tatrrace">Jarek Pelczynski</a>.</p>
+          <p class="right" id="version"></p>
+        </div>
+
       </div>
 
-      <div id="avalanches-warning">Ładowanie...</div>
+      <aside id="sidebar">
+        <div class="content">
+          <h2>Informacje pogodowe</h2>
 
+          <div id="avalanches-warning" class="sidebar-section">
+            <h4 class="section-header">Stopień zagrożenia lawinowego</h4>
+            <a title="Stopień zagrożenia lawinowego" href="http://tpn.pl/zwiedzaj/komunikat-lawinowy">Ładowanie ...</a>
+          </div>
+          <div class="sidebar-section">
+            <h4 class="section-header">Pogoda na 3 dni (Kasprowy Wierch)</h4>
+            <div id="forecast"></div>
+          </div>
+        </div>
+      </aside>
     </div>
 
     <div id="tmp" style="display: none !important;"></div>

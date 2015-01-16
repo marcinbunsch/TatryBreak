@@ -1,9 +1,8 @@
 * { margin: 0; padding: 0; }
 
 body {
-  background: #101010 url(../images/bg.jpg) no-repeat scroll 50% 0;
   font-family: 'Open Sans', Arial, sans-serif;
-  background-size: cover;
+  background-color: #000;
 }
 
 .left { float: left; }
@@ -35,6 +34,83 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+
+/*
+    PAGE STRUCTURE
+*/
+
+#container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #1d1f21;
+}
+
+#page {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #101010 url(../images/bg.jpg) no-repeat scroll 50% 0;
+  background-size: cover;
+  transition: all 250ms;
+  position: relative;
+  z-index: 2;
+  box-shadow: 3px 0 8px rgba(0,0,0,.4);
+}
+
+
+#sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  z-index: 1;
+}
+
+#toggle-sidebar {
+  position: absolute;
+  top: 22px;
+  right: 30px;
+  padding: 5px;
+  color: #fff;
+  font-size: 24px;
+  opacity: .8;
+}
+
+#toggle-sidebar:hover {
+  text-decoration: none;
+  opacity: 1;
+}
+
+#header {
+  position: relative;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+
+#footer .left { padding-left: 10px; }
+#footer .right { padding-right: 10px; }
+
+#footer a {
+  color: rgba(255,255,255,.5);
+}
+
+
+/*
+    CAMERAS
+*/
 
 table td {
   position: relative;
@@ -84,56 +160,127 @@ table .error span {
   text-transform: uppercase;
   position: relative;
   top: 50%;
-  transform: transitionY(-50%)
+  transform: translate(0,-50%);
 
 }
 
-#avalanches-warning {
-  background-color: rgba(255,255,255,.9);
-  position: absolute;
-  top: 22px;
-  right: 20px;
-  padding: 10px 80px 10px 15px;
-  font-size: 14px;
-  border-radius: 20px;
+/*
+    SIDEBAR INFORMATIONS
+*/
+.content {
+  padding: 15px;
+}
+
+.sidebar-section {
+  padding: 10px 0;
+  margin: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.section-header {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.2)
+}
+
+#sidebar h2 {
+  margin: 15px 0 20px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+#avalanches-warning a {
+  display: block;
+  overflow: hidden;
+}
+
+#avalanches-warning .icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+  vertical-align: middle;
+  border-radius: 25px;
+  background-color: rgba(255,255,255,.7);
+  margin-right: 10px;
 }
 
 #avalanches-warning img {
-  vertical-align: top;
-  margin-left: 10px;
-  height: 24px;
-  position: absolute;
-  top: 6px;
-  right: 10px;
+  width: 38px;
+  margin-top: 5px;
 }
 
 #avalanches-warning .fa {
   font-size: 16px;
+  margin-top: 10px;
 }
 
-#footer {
+#forecast {
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+.weather {
+  position: relative;
+  padding-left: 50px;
+  height: 50px;
+  color: #fff;
+  width: 45%;
+  margin-left: 5%;
+  float: left;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.weather-header {
+  clear: both;
+  color: #666;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+#forecast .section-header {
+  clear: both;
+  margin-bottom: 2px;
+}
+
+.weather img {
   position: absolute;
-  bottom: 0;
   left: 0;
-  right: 0;
-  padding: 2px 0;
-  text-shadow: 0 1px 0 rgba(0,0,0,.5);
-  font-size: 12px;
+  top: 2px;
+  width: 40px;
+  height: 40px;
+}
+
+.weather .info {
+  padding-top: 5px;
+}
+
+.weather .day-label {
+  display: block;
   text-transform: uppercase;
-  color: rgba(255,255,255,.3);
+  font-size: 10px;
+  opacity: .5;
 }
 
-#footer .left { padding-left: 10px; }
-#footer .right { padding-right: 10px; }
-
-#footer a {
-  color: rgba(255,255,255,.5);
+.temp {
+  display: block;
+  font-size: 18px;
 }
+
+/*
+    LIGHTBOX FOR CAMERAS
+*/
 
 #imagelightbox {
   position: fixed;
   z-index: 9999;
   cursor: zoom-out;
+  box-shadow: 0 2px 20px rgba(0,0,0,.5)
 }
 
 .zoom {
